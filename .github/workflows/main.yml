@@ -49,7 +49,7 @@ jobs:
             "platforms;android-33" \
             "build-tools;33.0.2"
 
-          # ✅ Symlink for legacy path expected by Buildozer
+          # Legacy path symlink for Buildozer
           mkdir -p android-sdk/tools/bin
           ln -sf $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager android-sdk/tools/bin/sdkmanager
 
@@ -65,12 +65,12 @@ jobs:
           pip install cython==0.29.33
           pip install buildozer pyjnius==1.6.1
 
-      - name: Build APK (clean first to avoid cached errors)
+      - name: Build APK (fresh build)
         env:
           ANDROIDSDK: $HOME/.buildozer/android/platform/android-sdk
           ANDROIDNDK: $HOME/.buildozer/android/platform/android-ndk-r25b
         run: |
-          buildozer android clean
+          rm -rf .buildozer  # Force clean build
           buildozer android debug
 
       - name: Upload APK to GitHub Actions artifacts
