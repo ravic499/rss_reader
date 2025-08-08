@@ -1,46 +1,30 @@
 [app]
 
-# (str) Title of your application
 title = RSS Reader
-
-# (str) Package name (no spaces or special chars)
 package.name = rssreader
-
-# (str) Package domain (needed for android/ios packaging)
 package.domain = org.yourname
-
-# (str) Source code directory
 source.dir = .
+source.include_exts = py,png,jpg,kv,atlas,json
 
-# (list) Source files to include
-source.include_exts = py,png,jpg,kv,atlas
+# Add these requirements:
+requirements = python3,kivy,kivymd,feedparser,beautifulsoup4,pyjnius==1.6.1
 
-# (list) Application requirements
-requirements = python3,kivy,pyjnius==1.6.1
-
-# (str) Application version
 version = 0.1
 
-# (int) Target Android API
 android.api = 33
-
-# (int) Minimum API your app will support
 android.minapi = 21
-
-# (int) Android NDK version to use
 android.ndk = 25b
-
-# (str) Build Tools version
 android.build_tools = 33.0.2
 
-# (str) SDK path (must match GitHub Actions workflow)
 android.sdk_path = ~/.buildozer/android/platform/android-sdk
-
-# (str) NDK path (must match GitHub Actions workflow)
 android.ndk_path = ~/.buildozer/android/platform/android-ndk-r25b
 
-# (str) Supported orientation
 orientation = portrait
-
-# (bool) Fullscreen mode
 fullscreen = 0
+
+# Permissions needed for notifications and internet access
+android.permissions = INTERNET,ACCESS_NETWORK_STATE,WAKE_LOCK,VIBRATE
+
+# (Optional) Enable AndroidX support (recommended)
+android.enable_androidx = True
+android.enable_jetifier = True
