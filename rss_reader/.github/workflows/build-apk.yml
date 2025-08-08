@@ -3,7 +3,6 @@ name: Build RSS Reader APK
 on:
   push:
     branches:
-      - main
       - master
   workflow_dispatch:
 
