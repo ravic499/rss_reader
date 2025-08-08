@@ -1,0 +1,50 @@
+name: Build RSS Reader APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y             openjdk-17-jdk             unzip             libncurses5             libffi-dev             libssl-dev             libsqlite3-dev             python3-pip             python3-setuptools             python3-wheel             git
+
+      - name: Install Buildozer & dependencies
+        run: |
+          pip install --upgrade pip
+          pip install buildozer cython
+
+      - name: Build APK
+        run: |
+          buildozer android debug
+
+      - name: Upload APK to GitHub Actions artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: rss-reader-apk
+          path: bin/*.apk
+
+      - name: Upload APK to GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: RSS Reader
+          tag_name: latest
+          files: bin/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
