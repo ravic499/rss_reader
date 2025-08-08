@@ -69,7 +69,9 @@ class SettingsScreen(MDScreen):
         self.dark_mode = active
         app = MDApp.get_running_app()
         app.theme_cls.theme_style = "Dark" if active else "Light"
-        app.settings.update_theme(active)
+        settings = app.settings.load_settings()
+        settings['dark_mode'] = active
+        app.settings.save_settings(settings)
 
     def open_refresh_menu(self):
         self.menu.caller = self.ids['refresh_interval_label'] if hasattr(self.ids, 'refresh_interval_label') else self
@@ -78,9 +80,10 @@ class SettingsScreen(MDScreen):
     def set_refresh_interval(self, interval):
         self.refresh_interval = interval
         app = MDApp.get_running_app()
-        app.settings.update_refresh_interval(interval)
+        settings = app.settings.load_settings()
+        settings['refresh_interval'] = interval
+        app.settings.save_settings(settings)
         self.menu.dismiss()
-        # Update UI label if needed here
         self.ids.refresh_interval_text = interval
 
     def go_back(self):
