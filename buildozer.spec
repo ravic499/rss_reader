@@ -17,7 +17,7 @@ source.include_exts = py,png,jpg,kv,atlas
 
 # (list) Application requirements
 requirements = python3,kivy
-
+version = 0.1
 # (int) Target Android API
 android.api = 33
 
