@@ -35,43 +35,32 @@ jobs:
             git \
             wget
 
-      - name: Cache Buildozer and pip
-        uses: actions/cache@v4
-        with:
-          path: |
-            .buildozer
-            ~/.buildozer
-            ~/.cache/pip
-          key: buildozer-${{ runner.os }}-${{ hashFiles('**/requirements.txt', '**/buildozer.spec') }}
-          restore-keys: |
-            buildozer-${{ runner.os }}-
+      - name: Ensure git is installed (safety check)
+        run: sudo apt install -y git
 
-      - name: Install Android SDK & Build Tools
+      - name: Install Android SDK & Build Tools into Buildozer path
         run: |
           mkdir -p $HOME/.buildozer/android/platform
           cd $HOME/.buildozer/android/platform
-          if [ ! -d "android-sdk" ]; then
-            wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-            unzip cmdline-tools.zip
-            mkdir -p android-sdk/cmdline-tools/latest
-            mv cmdline-tools/* android-sdk/cmdline-tools/latest/ || true
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          unzip cmdline-tools.zip
+          mkdir -p android-sdk/cmdline-tools/latest
+          mv cmdline-tools/* android-sdk/cmdline-tools/latest/ || true
 
-            yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk \
-              "platform-tools" \
-              "platforms;android-33" \
-              "build-tools;33.0.2"
+          yes | android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk \
+            "platform-tools" \
+            "platforms;android-33" \
+            "build-tools;33.0.2"
 
-            mkdir -p android-sdk/tools/bin
-            ln -sf $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager android-sdk/tools/bin/sdkmanager
-          fi
+          # Legacy path symlink for Buildozer
+          mkdir -p android-sdk/tools/bin
+          ln -sf $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager android-sdk/tools/bin/sdkmanager
 
       - name: Install Android NDK r25b
         run: |
           cd $HOME/.buildozer/android/platform
-          if [ ! -d "android-ndk-r25b" ]; then
-            wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
-            unzip android-ndk-r25b-linux.zip
-          fi
+          wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+          unzip android-ndk-r25b-linux.zip
 
       - name: Install Buildozer & dependencies (Pyjnius fix)
         run: |
@@ -79,13 +68,12 @@ jobs:
           pip install cython==0.29.33
           pip install buildozer pyjnius==1.6.1
 
-      - name: Build APK
+      - name: Build APK (fresh build)
         env:
           ANDROIDSDK: $HOME/.buildozer/android/platform/android-sdk
           ANDROIDNDK: $HOME/.buildozer/android/platform/android-ndk-r25b
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-          PATH: /usr/lib/jvm/java-17-openjdk-amd64/bin:$PATH
         run: |
+          rm -rf .buildozer  # Force clean build
           buildozer android debug
 
       - name: Upload APK to GitHub Actions artifacts
