@@ -20,12 +20,12 @@ class HomeScreen(MDScreen):
     def load_feeds(self):
         app = MDApp.get_running_app()
         # Get current feeds directly from the app instance
-        raw_feeds = app.feeds
+        self.feeds = app.feeds
         
         # Normalize feeds: convert strings to dicts with default values
         self.feeds = [
             f if isinstance(f, dict) else {"url": f, "category": "", "articles": []}
-            for f in raw_feeds
+            for f in feeds
         ]
         
         self.ids.feed_list.clear_widgets()

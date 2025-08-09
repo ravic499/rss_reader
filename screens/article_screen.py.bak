@@ -19,17 +19,14 @@ class ArticleScreen(MDScreen):
     def on_pre_enter(self):
         app = MDApp.get_running_app()
         feed = getattr(app, 'current_feed', None)
-        print("DEBUG: current_feed:", feed)
         self.ids.article_list.clear_widgets()
         if not feed or not feed.get('articles'):
-            print("DEBUG: No articles found")
             self.ids.status_label.opacity = 1
             return
         else:
             self.ids.status_label.opacity = 0
 
         self.articles = feed['articles']
-        print(f"DEBUG: Loading {len(self.articles)} articles")
         for article in self.articles:
             title = article.get('title', 'No Title')
             summary = article.get('summary', '')

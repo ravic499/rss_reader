@@ -14,10 +14,8 @@ def extract_thumbnail(summary):
 def fetch_feed(url):
     """Fetch a single RSS feed and return parsed articles."""
     feed = feedparser.parse(url)
-    print(f"Parsing feed: {url}, status: {feed.status}, entries: {len(feed.entries)}")
     articles = []
     for entry in feed.entries:
-        print(f"Entry title: {entry.get('title')}")
         thumbnail = extract_thumbnail(entry.get('summary', ''))
         articles.append({
             'title': entry.get('title', 'No Title'),
