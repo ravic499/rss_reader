@@ -1,9 +1,13 @@
 import json
 import os
+from kivy.app import App
 
 class SettingsManager:
     def __init__(self, filename="settings.json"):
-        self.filename = filename
+        app = App.get_running_app()
+        # This folder is guaranteed writable on Android & desktop
+        self.filename = os.path.join(app.user_data_dir, filename)
+
         self.default_settings = {
             "feeds": [],  # List of dicts: {"url": ..., "category": ...}
             "refresh_interval": "15 minutes",  # string for UI consistency

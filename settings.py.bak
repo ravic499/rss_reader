@@ -6,7 +6,7 @@ class SettingsManager:
         self.filename = filename
         self.default_settings = {
             "feeds": [],  # List of dicts: {"url": ..., "category": ...}
-            "refresh_interval": 15,  # minutes
+            "refresh_interval": "15 minutes",  # string for UI consistency
             "dark_mode": False
         }
 
@@ -16,7 +16,6 @@ class SettingsManager:
         try:
             with open(self.filename, "r") as f:
                 settings = json.load(f)
-            # Merge with defaults in case of missing keys
             for key, value in self.default_settings.items():
                 settings.setdefault(key, value)
             return settings
@@ -29,18 +28,18 @@ class SettingsManager:
                 json.dump(settings, f, indent=4)
         except Exception as e:
             print(f"Error saving settings: {e}")
-			
-	def update_feeds(feeds):
-		settings = load_settings()
-		settings['feeds'] = feeds
-		save_settings(settings)
 
-	def update_refresh_interval(interval):
-		settings = load_settings()
-		settings['refresh_interval'] = interval
-		save_settings(settings)
+    def update_feeds(self, feeds):
+        settings = self.load_settings()
+        settings['feeds'] = feeds
+        self.save_settings(settings)
 
-	def update_theme(theme):
-		settings = load_settings()
-		settings['theme'] = theme
-		save_settings(settings)
+    def update_refresh_interval(self, interval):
+        settings = self.load_settings()
+        settings['refresh_interval'] = interval
+        self.save_settings(settings)
+
+    def update_theme(self, dark_mode):
+        settings = self.load_settings()
+        settings['dark_mode'] = dark_mode
+        self.save_settings(settings)
