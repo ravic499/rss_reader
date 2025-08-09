@@ -14,20 +14,21 @@ class HomeScreen(MDScreen):
         self.dialog = None
 
     def on_pre_enter(self):
-        # Refresh feeds when screen appears
+        app = MDApp.get_running_app()
+        app.load_feeds()  # ✅ This ensures articles are fetched
         self.load_feeds()
 
     def load_feeds(self):
         app = MDApp.get_running_app()
         # Get current feeds directly from the app instance
         raw_feeds = app.feeds
-        
+
         # Normalize feeds: convert strings to dicts with default values
         self.feeds = [
             f if isinstance(f, dict) else {"url": f, "category": "", "articles": []}
             for f in raw_feeds
         ]
-        
+
         self.ids.feed_list.clear_widgets()
 
         if not self.feeds:
@@ -53,7 +54,7 @@ class HomeScreen(MDScreen):
 
     def open_feed(self, feed):
         app = MDApp.get_running_app()
-        app.current_feed = feed
+        app.set_current_feed(feed)  # ✅ Updated to use method from main.py
         app.root.current = "article"
 
     def show_add_feed_dialog(self):

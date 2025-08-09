@@ -18,6 +18,7 @@ class ArticleScreen(MDScreen):
 
     def on_pre_enter(self):
         app = MDApp.get_running_app()
+        # current_feed is set via app.set_current_feed(feed) from HomeScreen
         feed = getattr(app, 'current_feed', None)
         print("DEBUG: current_feed:", feed)
         self.ids.article_list.clear_widgets()
@@ -70,4 +71,3 @@ class ArticleScreen(MDScreen):
     def open_in_browser(self, url):
         if url:
             webbrowser.open(url)
-

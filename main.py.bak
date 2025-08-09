@@ -50,6 +50,7 @@ class RSSReaderApp(MDApp):
 
     def load_feeds(self):
         all_articles = fetch_all_feeds(self.feeds)  # returns dict keyed by url
+        print("Fetched all_articles:", all_articles)  # Debug print
         # Update self.feeds with articles fetched
         for feed in self.feeds:
             url = feed.get('url')
@@ -59,6 +60,7 @@ class RSSReaderApp(MDApp):
             else:
                 feed['articles'] = []
         self.all_articles = all_articles
+        print("Feeds after merging articles:", self.feeds)  # Debug print
         return self.feeds
 
     def add_feed(self, url, category):

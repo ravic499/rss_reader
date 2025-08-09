@@ -1,5 +1,3 @@
-# rss_handler.py
-
 import feedparser
 from bs4 import BeautifulSoup
 
@@ -13,15 +11,19 @@ def extract_thumbnail(summary):
 
 def fetch_feed(url):
     """Fetch a single RSS feed and return parsed articles."""
-    feed = feedparser.parse(url)
-    print(f"Parsing feed: {url}, status: {feed.status}, entries: {len(feed.entries)}")
+    feed = feedparser.parse(url, request_headers={
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+    })
+    status = getattr(feed, 'status', 'unknown')
+    print(f"Parsing feed: {url}, status: {status}, entries: {len(feed.entries)}")
     articles = []
     for entry in feed.entries:
         print(f"Entry title: {entry.get('title')}")
-        thumbnail = extract_thumbnail(entry.get('summary', ''))
+        summary = entry.get('summary') or entry.get('description') or ''
+        thumbnail = extract_thumbnail(summary)
         articles.append({
             'title': entry.get('title', 'No Title'),
-            'summary': entry.get('summary', ''),
+            'summary': summary,
             'thumbnail': thumbnail,
             'link': entry.get('link', '')
         })
@@ -30,17 +32,17 @@ def fetch_feed(url):
 def fetch_all_feeds(feed_list):
     """
     feed_list: List of dicts with keys: url, category/tag (optional)
-    Returns a list of dicts with url, articles, and category keys.
+    Returns a dict keyed by URL with values containing articles and category.
     """
-    all_feeds = []
+    print("DEBUG: fetch_all_feeds called")
+    all_feeds = {}
     for feed in feed_list:
         url = feed.get('url')
         if not url:
             continue
         articles = fetch_feed(url)
-        all_feeds.append({
-            'url': url,
+        all_feeds[url] = {
             'articles': articles,
             'category': feed.get('category', '')
-        })
+        }
     return all_feeds

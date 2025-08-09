@@ -25,6 +25,7 @@ class RSSReaderApp(MDApp):
             f if isinstance(f, dict) else {"url": f, "category": "", "articles": []}
             for f in self.feeds
         ]
+        self.current_feed = None  # ✅ Added to track selected feed
 
     def build(self):
         # Load all KV files BEFORE creating screen instances
@@ -80,6 +81,8 @@ class RSSReaderApp(MDApp):
         self.feeds = [feed for feed in self.feeds if feed.get('url') != url]
         self.save_feeds()
 
+    def set_current_feed(self, feed):  # ✅ Added method to set selected feed
+        self.current_feed = feed
 
 
 if __name__ == '__main__':
