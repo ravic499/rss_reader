@@ -1,4 +1,4 @@
-from kivy.lang import Builder
+#from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list import OneLineListItem, TwoLineAvatarListItem, ImageLeftWidget
 from kivymd.uix.button import MDRaisedButton, MDFlatButton
@@ -7,29 +7,6 @@ from kivy.properties import ObjectProperty
 from kivymd.app import MDApp
 import webbrowser
 
-KV = '''
-<ArticleScreen>:
-    name: "article"
-    BoxLayout:
-        orientation: "vertical"
-
-        MDToolbar:
-            title: "Articles"
-            elevation: 10
-            left_action_items: [["arrow-left", lambda x: root.go_back()]]
-
-        ScrollView:
-            MDList:
-                id: article_list
-
-        MDLabel:
-            id: status_label
-            text: "No articles available."
-            halign: "center"
-            size_hint_y: None
-            height: "48dp"
-            opacity: 0
-'''
 
 class ArticleScreen(MDScreen):
     article_list = ObjectProperty(None)
@@ -37,7 +14,7 @@ class ArticleScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Builder.load_string(KV)
+        #Builder.load_string(KV)
 
     def on_pre_enter(self):
         app = MDApp.get_running_app()

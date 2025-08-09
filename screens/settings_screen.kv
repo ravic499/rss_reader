@@ -1,0 +1,24 @@
+<SettingsScreen>:
+    name: "settings"
+    BoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Settings"
+            elevation: 10
+            left_action_items: [["arrow-left", lambda x: root.go_back()]]
+
+        MDList:
+            OneLineAvatarIconListItem:
+                text: "Dark Mode"
+                on_release: root.toggle_dark_mode_switch()
+
+                RightWidget:
+                    id: dark_mode_switch
+                    MDSwitch:
+                        on_active: root.on_dark_mode_switch(self.active)
+
+            OneLineListItem:
+                text: "Refresh Interval: " + root.refresh_interval
+                on_release: root.open_refresh_menu()
+

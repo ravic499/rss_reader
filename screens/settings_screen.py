@@ -1,37 +1,11 @@
-from kivy.lang import Builder
+#from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.list import OneLineListItem, OneLineAvatarListItem, IRightBodyTouch
 from kivymd.uix.selectioncontrol import MDSwitch
-from kivymd.uix.picker import MDDialog
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.properties import BooleanProperty, StringProperty
 from kivymd.app import MDApp
-
-KV = '''
-<SettingsScreen>:
-    name: "settings"
-    BoxLayout:
-        orientation: "vertical"
-
-        MDToolbar:
-            title: "Settings"
-            elevation: 10
-            left_action_items: [["arrow-left", lambda x: root.go_back()]]
-
-        MDList:
-            OneLineAvatarListItem:
-                text: "Dark Mode"
-                on_release: root.toggle_dark_mode_switch()
-
-                RightWidget:
-                    id: dark_mode_switch
-                    MDSwitch:
-                        on_active: root.on_dark_mode_switch(self.active)
-
-            OneLineListItem:
-                text: "Refresh Interval: " + root.refresh_interval
-                on_release: root.open_refresh_menu()
-'''
 
 class RightWidget(IRightBodyTouch, MDSwitch):
     pass
@@ -42,7 +16,7 @@ class SettingsScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Builder.load_string(KV)
+        #Builder.load_string(KV)
         self.menu_items = [
             {"viewclass": "OneLineListItem", "text": "5 minutes", "on_release": lambda x="5 minutes": self.set_refresh_interval(x)},
             {"viewclass": "OneLineListItem", "text": "15 minutes", "on_release": lambda x="15 minutes": self.set_refresh_interval(x)},

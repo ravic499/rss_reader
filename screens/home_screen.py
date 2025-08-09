@@ -1,34 +1,9 @@
-from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.list import OneLineListItem, TwoLineAvatarListItem, ImageLeftWidget
+from kivymd.uix.list import OneLineListItem
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
 from kivy.properties import ObjectProperty, ListProperty
 from kivymd.app import MDApp
-
-KV = '''
-<HomeScreen>:
-    name: "home"
-    BoxLayout:
-        orientation: "vertical"
-        
-        MDToolbar:
-            title: "RSS Reader"
-            elevation: 10
-            right_action_items: [["plus", lambda x: root.show_add_feed_dialog()]]
-        
-        ScrollView:
-            MDList:
-                id: feed_list
-
-        MDLabel:
-            id: status_label
-            text: "Loading feeds..."
-            halign: "center"
-            size_hint_y: None
-            height: "48dp"
-            opacity: 0  # Hidden initially
-'''
 
 class HomeScreen(MDScreen):
     feed_list = ObjectProperty(None)
@@ -36,18 +11,25 @@ class HomeScreen(MDScreen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Builder.load_string(KV)
         self.dialog = None
 
     def on_pre_enter(self):
         # Refresh feeds when screen appears
+        print("IDs available:", self.ids.keys())
         self.load_feeds()
 
     def load_feeds(self):
         app = MDApp.get_running_app()
-        self.feeds = app.load_feeds()
+        raw_feeds = app.load_feeds()  # Could be list of strings or dicts
+
+        # Normalize feeds: convert strings to dicts with default values
+        self.feeds = [
+            f if isinstance(f, dict) else {"url": f, "category": "", "articles": []}
+            for f in raw_feeds
+        ]
+
         self.ids.feed_list.clear_widgets()
-        
+
         if not self.feeds:
             self.ids.status_label.text = "No feeds added. Tap + to add."
             self.ids.status_label.opacity = 1
@@ -85,13 +67,14 @@ class HomeScreen(MDScreen):
 
     def add_feed(self, *args):
         content = self.dialog.content_cls
-        url = content.ids.url_input.text.strip()
-        category = content.ids.category_input.text.strip()
+        url = content.url_input.text.strip()
+        category = content.category_input.text.strip()
         if url:
             app = MDApp.get_running_app()
             app.add_feed(url, category)
             self.load_feeds()
         self.dialog.dismiss()
+
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import StringProperty
@@ -120,4 +103,3 @@ class AddFeedContent(MDBoxLayout):
         )
         self.add_widget(self.url_input)
         self.add_widget(self.category_input)
-

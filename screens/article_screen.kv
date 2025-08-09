@@ -1,0 +1,21 @@
+<ArticleScreen>:
+    name: "article"
+    BoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Articles"
+            elevation: 10
+            left_action_items: [["arrow-left", lambda x: root.go_back()]]
+
+        ScrollView:
+            MDList:
+                id: article_list
+
+        MDLabel:
+            id: status_label
+            text: "No articles available."
+            halign: "center"
+            size_hint_y: None
+            height: "48dp"
+            opacity: 0

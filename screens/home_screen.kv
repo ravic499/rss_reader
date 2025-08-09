@@ -1,0 +1,21 @@
+<HomeScreen>:
+    name: "home"
+    BoxLayout:
+        orientation: "vertical"
+        
+        MDTopAppBar:
+            title: "RSS Reader"
+            elevation: 10
+            right_action_items: [["plus", lambda x: root.show_add_feed_dialog()]]
+        
+        ScrollView:
+            MDList:
+                id: feed_list
+
+        MDLabel:
+            id: status_label
+            text: "Loading feeds..."
+            halign: "center"
+            size_hint_y: None
+            height: "48dp"
+            opacity: 0  # Hidden initially
